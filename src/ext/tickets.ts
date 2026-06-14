@@ -1,9 +1,10 @@
-import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Colors, ComponentType, ContainerBuilder, ContextMenuCommandBuilder, Events, GuildMember, InteractionContextType, Message, MessageFlags, SlashCommandBuilder, User, Role, type APIRole, type GuildTextBasedChannel, PermissionsBitField, MessageMentions, AllowedMentionsTypes, Client, GuildMemberRoleManager, AttachmentBuilder, MediaGalleryItem, MediaGalleryItemBuilder } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Colors, ComponentType, ContainerBuilder, ContextMenuCommandBuilder, Events, GuildMember, InteractionContextType, Message, MessageFlags, SlashCommandBuilder, User, Role, type APIRole, type GuildTextBasedChannel, PermissionsBitField, MessageMentions, AllowedMentionsTypes, GuildMemberRoleManager, AttachmentBuilder, MediaGalleryItem, MediaGalleryItemBuilder } from "discord.js";
 import type { ContextMenuData, SlashCommandData } from "./";
 import { isMod } from "../utils/staffCheck";
 import snowflake from "../snowflake";
 import howDidWeGetHere from "../utils/howDidWeGetHere";
 import Canvas from '@napi-rs/canvas';
+import Client from "../utils/Client";
 import { join } from "node:path";
 import { request } from "undici";
 
@@ -107,19 +108,17 @@ export const slashCommands: SlashCommandData[] = [
                     includeVerification: interaction.options.getBoolean("include-verification", false) ?? false,
                 }
 
-                const dataFile = Bun.file("./src/data/rules.json");
-                const fileData = await dataFile.json() as {
-                    lastUpdated: string;
-                    rules: Record<string, string>;
-                    notes: string[]
-                };
+                const client = interaction.client as Client;
 
-                const rulesContent = Object.entries(fileData.rules).map(([key, value]) => {
-                    return `## ${key}\n${value}`;
+                const rules = await client.db.query.ruleTable.findMany();
+                const notes = await client.db.query.noteTable.findMany();
+
+                const rulesContent = rules.map((r) => {
+                    return `## ${r.title}\n${r.description}`;
                 });
-                const notesContent = fileData.notes.map(value => {
-                    return `- ${value}`;
-                })
+                const notesContent = notes.map(n => {
+                    return `- ${n}`;
+                });
 
                 const containers = [
                     new ContainerBuilder()
@@ -267,7 +266,8 @@ export const slashCommands: SlashCommandData[] = [
             if (subcommand === "create") {
                 await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-                const ticket = await newTicket(interaction.client, interaction.user.id, "slash");
+                const client = interaction.client as Client;
+                const ticket = await newTicket(client, interaction.user.id, "slash");
 
                 if (ticket) {
                     const resp = new ContainerBuilder()
@@ -393,7 +393,8 @@ export const slashCommands: SlashCommandData[] = [
 
                         const msg = await ticket.send({ components: [container], flags: MessageFlags.IsComponentsV2 });
 
-                        await logTicketClosed(interaction.client, options.ticketId, ticket.id, interaction.user.id);
+                        const client = interaction.client as Client;
+                        await logTicketClosed(client, options.ticketId, ticket.id, interaction.user.id);
 
                         await ticket.edit({
                             name: `closed-${options.ticketId}`,
@@ -426,7 +427,8 @@ export const contextMenus: ContextMenuData[] = [
             await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
             if (interaction.isMessageContextMenuCommand()) {
-                const ticket = await newTicket(interaction.client, interaction.user.id, "context", interaction.targetMessage);
+                const client = interaction.client as Client;
+                const ticket = await newTicket(client, interaction.user.id, "context", interaction.targetMessage);
 
                 if (ticket) {
                     const resp = new ContainerBuilder()
