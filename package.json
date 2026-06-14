@@ -4,15 +4,21 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.22.4"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "@codylabs/snowflake-id-generator": "^0.0.7",
+    "@libsql/client": "^0.17.3",
     "@napi-rs/canvas": "^1.0.0",
     "discord.js": "^14.26.4",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "pagination.djs": "^4.0.18",
     "undici": "^8.4.1"
   }
 }

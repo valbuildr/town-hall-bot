@@ -6,7 +6,7 @@ const client = new Client();
 
 client.once(Events.ClientReady, (readyClient) => {
     console.log(`Logged in as ${readyClient.user.username}`);
-    readyClient.user.setActivity("DM to create a ticket", { type: ActivityType.Playing });
+    readyClient.user.setActivity("DM to create a ticket | Version 0.1.1", { type: ActivityType.Playing });
 
     Object.entries(cmds).forEach(async ([k, v]) => {
         if (v.slashCommands) {

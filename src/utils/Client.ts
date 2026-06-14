@@ -1,10 +1,13 @@
 import { Client as DClient, GatewayIntentBits, Collection, Partials, Events, MessageFlags } from "discord.js";
 import type { SlashCommandData } from "../ext";
 import type { ContextMenuData } from "../ext";
+import { drizzle } from 'drizzle-orm/libsql';
+import * as schema from "../db/schema";
 
 export default class Client<Ready extends boolean = boolean> extends DClient<Ready> {
     public slashCommands = new Collection<string, SlashCommandData>();
     public contextMenus = new Collection<string, ContextMenuData>();
+    public db = drizzle(process.env.DB_FILE_NAME!, { schema });
 
     public addSlashCommand(data: SlashCommandData) {
         this.slashCommands.set(data.data.name, data);
