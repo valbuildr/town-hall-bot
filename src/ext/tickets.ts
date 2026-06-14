@@ -98,6 +98,8 @@ export const slashCommands: SlashCommandData[] = [
                     .setRequired(false)
             ),
         async execute(interaction) {
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
             if (isMod(interaction.member!.roles)) {
                 const options = {
                     channel: interaction.options.getChannel("channel", true),
@@ -185,9 +187,11 @@ export const slashCommands: SlashCommandData[] = [
 
                         await channel.send({ components: [ar] });
                     }
+
+                    await interaction.followUp({ content: `Sent! Check <#${options.channel.id}> for the messages.` })
                 }
             } else {
-                await interaction.reply({ content: "You don't have the required role(s) for this command.", flags: MessageFlags.Ephemeral });
+                await interaction.followUp({ content: "You don't have the required role(s) for this command." });
             }
         },
     },
@@ -261,6 +265,8 @@ export const slashCommands: SlashCommandData[] = [
             };
 
             if (subcommand === "create") {
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
                 const ticket = await newTicket(interaction.client, interaction.user.id, "slash");
 
                 if (ticket) {
@@ -269,13 +275,15 @@ export const slashCommands: SlashCommandData[] = [
                             td.setContent(`## Created Ticket \`${ticket.ticketId}\`\nVisit the created channel in ${interaction.guild!.name}, you should've been pinged there. Here's a handy link to the channel: <#${ticket.channelId}>`)
                         )
                         .setAccentColor(Colors.Green);
-                    await interaction.reply({ components: [resp], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] });
+                    await interaction.followUp({ components: [resp], flags: [MessageFlags.IsComponentsV2] });
                 } else {
-                    await interaction.reply({ content: "An error ocurred, please try again later.", flags: MessageFlags.Ephemeral });
+                    await interaction.followUp({ content: "An error ocurred, please try again later." });
                 }
 
                 return;
             } else if (subcommand === "add") {
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
                 const options = {
                     target: interaction.options.getMentionable("target", true),
                     ping: interaction.options.getBoolean("ping", false) ?? false,
@@ -306,15 +314,17 @@ export const slashCommands: SlashCommandData[] = [
 
                             const msg = await ticket.send({ components: [container], flags: MessageFlags.IsComponentsV2, allowedMentions: { users: allowedMentionsUsers, roles: [] } });
 
-                            await interaction.reply({ content: msg.url, flags: MessageFlags.Ephemeral });
+                            await interaction.followUp({ content: msg.url });
                         }
                     } else {
-                        await interaction.reply({ content: `You don't have permissions to add users/roles to this ticket.`, flags: MessageFlags.Ephemeral });
+                        await interaction.followUp({ content: `You don't have permissions to add users/roles to this ticket.` });
                     }
                 } else {
-                    await interaction.reply({ content: `No open ticket with the ID \`${options.ticketId}\` found.`, flags: MessageFlags.Ephemeral });
+                    await interaction.followUp({ content: `No open ticket with the ID \`${options.ticketId}\` found.` });
                 }
             } else if (subcommand === "remove") {
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
                 const options = {
                     target: interaction.options.getMentionable("target", true),
                     // @ts-ignore
@@ -340,15 +350,17 @@ export const slashCommands: SlashCommandData[] = [
 
                             const msg = await ticket.send({ components: [container], flags: MessageFlags.IsComponentsV2 });
 
-                            await interaction.reply({ content: msg.url, flags: MessageFlags.Ephemeral });
+                            await interaction.followUp({ content: msg.url });
                         }
                     } else {
-                        await interaction.reply({ content: `You don't have permissions to remove users/roles to this ticket.`, flags: MessageFlags.Ephemeral });
+                        await interaction.followUp({ content: `You don't have permissions to remove users/roles to this ticket.` });
                     }
                 } else {
-                    await interaction.reply({ content: `No open ticket with the ID \`${options.ticketId}\` found.`, flags: MessageFlags.Ephemeral });
+                    await interaction.followUp({ content: `No open ticket with the ID \`${options.ticketId}\` found.` });
                 }
             } else if (subcommand === "close") {
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
                 const options = {
                     // @ts-ignore
                     ticketId: interaction.options.getString("ticket-id", false) ?? interaction.channel?.name.split("-")[1],
@@ -388,16 +400,16 @@ export const slashCommands: SlashCommandData[] = [
                             topic: new Date().toISOString(),
                         });
 
-                        await interaction.reply({ content: msg.url, flags: MessageFlags.Ephemeral });
+                        await interaction.followUp({ content: msg.url });
                     } else {
-                        await interaction.reply({ content: `You don't have permissions to close this ticket.`, flags: MessageFlags.Ephemeral });
+                        await interaction.followUp({ content: `You don't have permissions to close this ticket.` });
                     }
                 } else {
-                    await interaction.reply({ content: `No open ticket with the ID \`${options.ticketId}\` found.`, flags: MessageFlags.Ephemeral });
+                    await interaction.followUp({ content: `No open ticket with the ID \`${options.ticketId}\` found.` });
                 }
             } else {
                 const hdwg = howDidWeGetHere("Please provide a valid subcommand.");
-                await interaction.reply({ components: hdwg, flags: MessageFlags.IsComponentsV2 });
+                await interaction.followUp({ components: hdwg, flags: MessageFlags.IsComponentsV2 });
                 return;
             }
         }
@@ -411,6 +423,8 @@ export const contextMenus: ContextMenuData[] = [
             .setType(ApplicationCommandType.Message)
             .setContexts(InteractionContextType.Guild),
         async execute(interaction) {
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
             if (interaction.isMessageContextMenuCommand()) {
                 const ticket = await newTicket(interaction.client, interaction.user.id, "context", interaction.targetMessage);
 
@@ -420,9 +434,9 @@ export const contextMenus: ContextMenuData[] = [
                             td.setContent(`## Created Ticket \`${ticket.ticketId}\`\nVisit the created channel in ${interaction.guild!.name}, you should've been pinged there. Here's a handy link to the channel: <#${ticket.channelId}>`)
                         )
                         .setAccentColor(Colors.Green);
-                    await interaction.reply({ components: [resp], flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] });
+                    await interaction.followUp({ components: [resp], flags: [MessageFlags.IsComponentsV2] });
                 } else {
-                    await interaction.reply({ content: "An error ocurred, please try again later.", flags: MessageFlags.Ephemeral });
+                    await interaction.followUp({ content: "An error ocurred, please try again later." });
                 }
             }
         },
