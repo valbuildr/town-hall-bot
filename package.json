@@ -1,5 +1,6 @@
 {
   "name": "town-hall-bot",
+  "version": "0.1.1",
   "module": "src/index.ts",
   "type": "module",
   "private": true,
@@ -10,6 +11,10 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "scripts": {
+    "main": "bun src/index.ts",
+    "sync": "bun src/sync.ts"
   },
   "dependencies": {
     "@codylabs/snowflake-id-generator": "^0.0.7",
