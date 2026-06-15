@@ -44,6 +44,13 @@ bun install
 
 Copy `example.env` and name it simply `.env`, then fill out the values.
 
+Create database tables.
+```bash
+bun run db:push
+# OR
+bunx drizzle-kit push
+```
+
 Sync slash commands.
 ```bash
 bun run sync

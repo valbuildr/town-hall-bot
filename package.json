@@ -14,7 +14,9 @@
   },
   "scripts": {
     "main": "bun src/index.ts",
-    "sync": "bun src/sync.ts"
+    "sync": "bun src/sync.ts",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@codylabs/snowflake-id-generator": "^0.0.7",
