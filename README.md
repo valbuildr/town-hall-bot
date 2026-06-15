@@ -1,6 +1,6 @@
 # town-hall-bot
 
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/valbuildr?style=flat-square&logo=githubsponsors&logoColor=ffffff&color=ea4aaa)](https://github.com/valbuildr/sponsors)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/valbuildr?style=flat-square&logo=githubsponsors&logoColor=ffffff&color=ea4aaa)](https://github.com/sponsors/valbuildr)
 ![GitHub last commit](https://img.shields.io/github/last-commit/valbuildr/town-hall-bot?style=flat-square)
 ![GitHub top language](https://img.shields.io/github/languages/top/valbuildr/town-hall-bot?style=flat-square)
 [![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-raw/valbuildr/town-hall-bot?style=flat-square)](https://github.com/valbuildr/town-hall-bot/issues)
